@@ -19,11 +19,12 @@ angular.module('ngRouting',[])
             return model+'Id'
         }
     })
-    .provider('routing',function ($routeProvider,routingUtils,$locationProvider,$logProvider) {
+    .provider('routing',function ($routeProvider,routingUtils,$locationProvider,$logProvider,$interpolateProvider) {
         var functions = { }
             ,capitalize = routingUtils.capitalize
             ,injector = angular.injector(['ng'])
             ,$log     = injector.invoke($logProvider.$get)
+            ,$interpolate = injector.invoke($interpolateProvider.$get)
         function makeRoute(route, base){
             base = base || {models:[]}
             var routes = {};
@@ -39,22 +40,22 @@ angular.module('ngRouting',[])
                 , collectionRoute = {
                     controller: Model+'ListCtrl'
                     ,resolve: resolve
-                    ,templateUrl: 'views/'+model+'/list.html'
+                    ,templateUrl: provider.viewTemplate({model:model,action:'list'})
                 }
                 , resourceRoute = {
                     controller: Model+'Ctrl'
                     ,resolve: resolve
-                    ,templateUrl: 'views/'+model+'/show.html'
+                    ,templateUrl: provider.viewTemplate({model:model,action:'show'})
                 }
                 , newResourceRoute = {
                     controller:'New'+Model+'Ctrl'
                     ,resolve: resolve
-                    ,templateUrl: 'views/'+model+'/new.html'
+                    ,templateUrl: provider.viewTemplate({model:model,action:'new'})
                 }
                 , editResourceRoute = {
                     controller:'Edit'+Model+'Ctrl'
                     ,resolve: resolve
-                    ,templateUrl: 'views/'+model+'/edit.html'
+                    ,templateUrl: provider.viewTemplate({model:model,action:'edit'})
                 }
                 
             base.models.push(model)
@@ -96,9 +97,11 @@ angular.module('ngRouting',[])
             }
         }
         
+        var pathRe = new RegExp(':([^/]*)','g')
         var provider = {
-            pathRe: new RegExp(':([^/]*)','g'),
+            viewTemplate: "views/{{model}}/{{action}}.html",
             build:function (routes) {
+                this.viewTemplate = $interpolate(provider.viewTemplate)
                 provider.basePath = $locationProvider.html5Mode() ? '' : ('/#' + $locationProvider.hashPrefix()),
                 angular.forEach(routes,makeRoute)
                 return $routeProvider
@@ -110,7 +113,7 @@ angular.module('ngRouting',[])
             $get:function ($interpolate, $rootScope) {
                 var methods = {}
                 Object.keys(functions).forEach(function (method) {
-                    var path = provider.basePath + functions[method].path.replace(provider.pathRe,'{{$1}}')
+                    var path = provider.basePath + functions[method].path.replace(pathRe,'{{$1}}')
                         ,interpolate = $interpolate(path)
                     methods[method] = spreadArguments(interpolate,functions[method].models)
                 })
