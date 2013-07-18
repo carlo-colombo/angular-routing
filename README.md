@@ -70,7 +70,7 @@ app.run(function ($rootScope,routing) {
     $rootScope.h = routing.helpers
 })
 ```
-Helper functions generate urls matching with configured $locationProvider.html5Mode() and $locationProvider.hashPrefix()
+Helper functions generate urls matching with configured `$locationProvider.html5Mode()` and `$locationProvider.hashPrefix()`
 ```
 booksPath()
 newBookPath(bookId)
