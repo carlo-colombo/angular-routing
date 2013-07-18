@@ -1,0 +1,10 @@
+{
+  "name": "angular-routing",
+  "version": "0.0.1",
+  "main": "routing.js",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components"
+  ]
+}
