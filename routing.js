@@ -117,6 +117,11 @@ angular.module('ngRouting',[])
                         ,interpolate = $interpolate(path)
                     methods[method] = spreadArguments(interpolate,functions[method].models)
                 })
+                Object.keys(functions).forEach(function (method) {
+                    var path = functions[method].path.replace(pathRe,'{{$1}}')
+                        ,interpolate = $interpolate(path)
+                    methods[method.replace('Path','Route')] = spreadArguments(interpolate,functions[method].models)
+                })
                 return {
                     helpers:methods
                 }
