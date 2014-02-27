@@ -82,3 +82,14 @@ newBookPagePath(bookId)
 bookPagePath(bookId,pageId)
 editBookPagePath(bookId,pageId)
 ```
+
+###Additional model actions
+```javascript
+    routingProvider.build([{
+        model:'book', //first level resource
+        actions:['lend']
+    }])
+```
+| route                   | controller       | view                 |
+| ----------------------- |:-----------------|:---------------------|
+| /books/:bookId/lend     | BookLendCtrl     | views/book/lend.html |

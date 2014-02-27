@@ -57,6 +57,14 @@ angular.module('ngRouting',[])
                     ,resolve: resolve
                     ,templateUrl: provider.viewTemplate({model:model,action:'edit'})
                 }
+                , additionalRoutes = route.actions.map(function (action) {
+                    return {
+                        action: action
+                        , controller: Model+capitalize(action)+'Ctrl'
+                        , resolve: resolve
+                        , templateUrl: provider.viewTemplate({model:model, action: action})
+                    }
+                })
                 
             base.models.push(model)
             var path = base.models[0] + base.models.slice(1).map(capitalize).join()
@@ -64,6 +72,13 @@ angular.module('ngRouting',[])
             functions[path + 'Path']  = {path:routes.resourceRoute   , models: base.models}
             functions['new'+capitalize(path) + 'Path']  = {path:routes.newResourceRoute , models: base.models}
             functions['edit'+capitalize(path) + 'Path'] = {path:routes.editResourceRoute, models: base.models}
+
+            route.actions.forEach(function (action) {
+                functions[path+capitalize(action)+'Path'] = {
+                    path: routes.resourceRoute+'/'+action
+                    , models: base.models
+                }
+            })
 
             function when (path,route) {
                 $routeProvider.when(path,route)
@@ -76,6 +91,10 @@ angular.module('ngRouting',[])
             when(routes.newResourceRoute ,newResourceRoute)
             when(routes.resourceRoute    ,resourceRoute)
             when(routes.editResourceRoute,editResourceRoute)
+
+            additionalRoutes.forEach(function (additionalRoute) {
+                when(functions[path+capitalize(additionalRoute.action)+'Path'].path, additionalRoute)
+            })
 
             if(route.nested){
                 angular.forEach(route.nested,function (nested) {
