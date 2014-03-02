@@ -1,4 +1,4 @@
-angular.module('ngRouting',[])
+angular.module('ngRouting',['ngRoute'])
     .constant('routingUtils',{
         capitalize: function  (string) {
             return string.charAt(0).toUpperCase() + string.slice(1)
