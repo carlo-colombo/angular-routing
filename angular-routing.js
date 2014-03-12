@@ -121,7 +121,7 @@ angular.module('ngRouting',['ngRoute'])
             viewTemplate: "views/{{model}}/{{action}}.html",
             build:function (routes) {
                 this.viewTemplate = $interpolate(provider.viewTemplate)
-                provider.basePath = $locationProvider.html5Mode() ? '' : ('/#' + $locationProvider.hashPrefix()),
+                provider.basePath = $locationProvider.html5Mode() ? '' : ('#' + $locationProvider.hashPrefix()),
                 angular.forEach(routes,makeRoute)
                 return $routeProvider
             },
