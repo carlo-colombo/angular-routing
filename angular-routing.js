@@ -27,6 +27,7 @@ angular.module('ngRouting',['ngRoute'])
             ,$interpolate = injector.invoke($interpolateProvider.$get)
         function makeRoute(route, base){
             base = base || {models:[]}
+            var actions = route.actions || []
             var routes = {};
                 ['collectionRoute',
                  'resourceRoute',
@@ -57,7 +58,7 @@ angular.module('ngRouting',['ngRoute'])
                     ,resolve: resolve
                     ,templateUrl: provider.viewTemplate({model:model,action:'edit'})
                 }
-                , additionalRoutes = route.actions.map(function (action) {
+                , additionalRoutes = actions.map(function (action) {
                     return {
                         action: action
                         , controller: Model+capitalize(action)+'Ctrl'
@@ -73,7 +74,7 @@ angular.module('ngRouting',['ngRoute'])
             functions['new'+capitalize(path) + 'Path']  = {path:routes.newResourceRoute , models: base.models}
             functions['edit'+capitalize(path) + 'Path'] = {path:routes.editResourceRoute, models: base.models}
 
-            route.actions.forEach(function (action) {
+            actions.forEach(function (action) {
                 functions[path+capitalize(action)+'Path'] = {
                     path: routes.resourceRoute+'/'+action
                     , models: base.models
